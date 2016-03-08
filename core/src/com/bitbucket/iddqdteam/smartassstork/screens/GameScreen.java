@@ -14,6 +14,7 @@ import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -31,8 +32,9 @@ import java.util.Iterator;
  * Created by takahawk on 08.03.16.
  */
 public class GameScreen implements Screen {
+    public static final float PIXELS_TO_METERS = 100;
     private static final float PIXEL_PER_TILES = 64;
-    private static final float GRAVITY = -100f;
+    private static final float GRAVITY = -5f;
     private OrthographicCamera camera = initCamera();
     private Viewport port = new FillViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
     private World world = new World(new Vector2(0, GRAVITY), true);
@@ -51,13 +53,13 @@ public class GameScreen implements Screen {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set(
-                (Float) map.getLayers().get("Player").getObjects().get(0).getProperties().get("x"),
-                (Float) map.getLayers().get("Player").getObjects().get(0).getProperties().get("y")
+                (Float) map.getLayers().get("Player").getObjects().get(0).getProperties().get("x") / PIXELS_TO_METERS,
+                (Float) map.getLayers().get("Player").getObjects().get(0).getProperties().get("y") / PIXELS_TO_METERS
         );
-        Body playerBody = world.createBody(bodyDef);
+        final Body playerBody = world.createBody(bodyDef);
 
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(heroTexture.getWidth() / 2, heroTexture.getHeight() / 2);
+        shape.setAsBox(heroTexture.getWidth() / 2 / PIXELS_TO_METERS, heroTexture.getHeight() / 2 / PIXELS_TO_METERS);
         FixtureDef fixture = new FixtureDef();
         fixture.shape = shape;
         fixture.density = 0.0f;
@@ -66,6 +68,36 @@ public class GameScreen implements Screen {
         shape.dispose();
         playerActor = new PlayerActor(new TextureRegion(heroTexture), playerBody);
         stage.addActor(playerActor);
+        world.setContactListener(new ContactListener() {
+            @Override
+            public void beginContact(Contact contact) {
+                if (
+                        playerBody.getFixtureList().contains(contact.getFixtureA(), true) ||
+                        playerBody.getFixtureList().contains(contact.getFixtureB(), true)
+                        )
+                    playerActor.setOnTheGround(true);
+
+            }
+
+            @Override
+            public void endContact(Contact contact) {
+                if (
+                        playerBody.getFixtureList().contains(contact.getFixtureA(), true) ||
+                                playerBody.getFixtureList().contains(contact.getFixtureB(), true)
+                        )
+                    playerActor.setOnTheGround(false);
+            }
+
+            @Override
+            public void preSolve(Contact contact, Manifold oldManifold) {
+
+            }
+
+            @Override
+            public void postSolve(Contact contact, ContactImpulse impulse) {
+
+            }
+        });
         addGround(map);
     }
 
@@ -73,7 +105,7 @@ public class GameScreen implements Screen {
         for (MapObject obj : map.getLayers().get("Ground").getObjects()) {
 
             if (obj instanceof PolygonMapObject) {
-                Shape shape = mapParser.getPolygon((PolygonMapObject) obj, PIXEL_PER_TILES);
+                Shape shape = mapParser.getPolygon((PolygonMapObject) obj, 1 / PIXELS_TO_METERS);
                 BodyDef bd = new BodyDef();
                 bd.type = BodyDef.BodyType.StaticBody;
                 Body body = world.createBody(bd);
@@ -100,10 +132,10 @@ public class GameScreen implements Screen {
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             playerActor.moveRight();
         }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             playerActor.moveLeft();
         }
-        if (Gdx.input.isButtonPressed(Input.Keys.UP)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
             playerActor.jump();
         }
     }
@@ -125,7 +157,8 @@ public class GameScreen implements Screen {
         mapRenderer.render();
         stage.act(delta);
         stage.draw();
-        debugRenderer.render(world, camera.combined);
+        Matrix4 debugMatrix = camera.combined.cpy().scale(PIXELS_TO_METERS, PIXELS_TO_METERS, 0);
+        debugRenderer.render(world, debugMatrix);
     }
 
     @Override

@@ -1,9 +1,6 @@
 package com.bitbucket.iddqdteam.smartassstork;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -16,9 +13,8 @@ public class SmartassStorkGame extends Game {
 	
 	@Override
 	public void create () {
-		setScreen(new GameScreen(new PlayerData(), new TmxMapLoader().load("level1.tmx")));
+		setScreen(new GameScreen(new PlayerData(), new TmxMapLoader().load("map1.tmx")));
 		batch = new SpriteBatch();
-		img = new Texture("badlogic.jpg");
 	}
 
 	@Override
