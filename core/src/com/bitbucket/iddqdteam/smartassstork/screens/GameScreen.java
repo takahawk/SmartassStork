@@ -14,6 +14,7 @@ import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
@@ -26,6 +27,7 @@ import com.bitbucket.iddqdteam.smartassstork.game.PlayerActor;
 import com.bitbucket.iddqdteam.smartassstork.game.PlayerData;
 import com.bitbucket.iddqdteam.smartassstork.util.TiledMapParser;
 
+import java.util.Arrays;
 import java.util.Iterator;
 
 /**
@@ -74,8 +76,10 @@ public class GameScreen implements Screen {
                 if (
                         playerBody.getFixtureList().contains(contact.getFixtureA(), true) ||
                         playerBody.getFixtureList().contains(contact.getFixtureB(), true)
-                        )
-                    playerActor.setOnTheGround(true);
+                        ) {
+                    if (MathUtils.isEqual(MathUtils.floor(contact.getWorldManifold().getNormal().y), -1))
+                        playerActor.setOnTheGround(true);
+                }
 
             }
 

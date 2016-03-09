@@ -12,7 +12,7 @@ import com.bitbucket.iddqdteam.smartassstork.screens.GameScreen;
  * Created by takahawk on 08.03.16.
  */
 public class PlayerActor extends Actor {
-    private static final float MOVE_FORCE = 2f;
+    private static final float MOVE_FORCE = 4f;
     private static final float JUMP_FORCE = 1f;
     Sprite _sprite;
     Body _body;
@@ -43,7 +43,6 @@ public class PlayerActor extends Actor {
 
     public void moveRight() {
         _body.applyForceToCenter(MOVE_FORCE, 0, true);
-        System.out.println(_body.getLinearVelocity());
     }
 
     public void moveLeft() {
@@ -53,7 +52,6 @@ public class PlayerActor extends Actor {
     public void jump() {
         if (onTheGround) {
             _body.applyLinearImpulse(0, JUMP_FORCE, _body.getPosition().x, _body.getPosition().y, true);
-            System.out.println(_body.getLinearVelocity());
         }
 
     }
