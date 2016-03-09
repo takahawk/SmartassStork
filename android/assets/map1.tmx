@@ -48,4 +48,24 @@
    <polygon points="0,0 268,-1 269,88 23,89"/>
   </object>
  </objectgroup>
+ <objectgroup name="Enemies" width="50" height="10">
+  <object name="Stork1" x="2112" y="448">
+   <properties>
+    <property name="routeDistance" value="6"/>
+   </properties>
+   <polygon points="0,0 0,-64 64,-64 64,0"/>
+  </object>
+  <object name="Stork1" x="1600" y="320">
+   <properties>
+    <property name="routeDistance" value="3"/>
+   </properties>
+   <polygon points="0,0 0,-64 64,-64 64,0"/>
+  </object>
+  <object name="Stork1" x="768" y="448">
+   <properties>
+    <property name="routeDistance" value="5"/>
+   </properties>
+   <polygon points="0,0 0,-64 64,-64 64,0"/>
+  </object>
+ </objectgroup>
 </map>
