@@ -54,6 +54,7 @@ public class GameScreen
     private TiledMapParser mapParser = new TiledMapParser();
     private Texture heroTexture;
     private Texture heroMissileTexture;
+    private Texture hero1deathTexture, hero2deathTexture;
     private Texture moonTexture;
     private Texture storkTexture;
     private Texture deathStorkTexture;
@@ -100,6 +101,8 @@ public class GameScreen
         storkTexture = resourceManager.get("stork-flying.png", Texture.class);
         heroMissileTexture = resourceManager.get("molotok.png", Texture.class);
         deathStorkTexture = resourceManager.get("stork.png", Texture.class);
+        hero1deathTexture = resourceManager.get("hero1dead.png", Texture.class);
+        hero2deathTexture = resourceManager.get("hero2dead.png", Texture.class);
         hudSkin = resourceManager.get("uiskin.json", Skin.class);
     }
 
@@ -172,6 +175,7 @@ public class GameScreen
         );
         entities.put(playerActor.getBody(), playerActor);
         playerActor.setMoveAnimation(heroMoveAnimation);
+        playerActor.setDeathTexture(new TextureRegion(firstHero ? hero1deathTexture : hero2deathTexture));
         mapStage.addActor(playerActor);
         mapStage.setCenterActor(playerActor);
         world.setContactListener(new ContactListener() {

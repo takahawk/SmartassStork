@@ -22,6 +22,7 @@ public class PlayerActor
     private static final float MOVE_FORCE = 6f;
     private static final float JUMP_FORCE = 2f;
     TextureRegion texture;
+    TextureRegion deathTexture;
     Animation moveAnimation;
     TextureRegion missileTexture;
     Body _body;
@@ -149,6 +150,9 @@ public class PlayerActor
         this.onTheGround = onTheGround;
     }
 
+    public void setDeathTexture(TextureRegion deathTexture) {
+        this.deathTexture = deathTexture;
+    }
     @Override
     public void kill() {
         getStage().addActor(new Actor() {
@@ -164,7 +168,7 @@ public class PlayerActor
 
             @Override
             public void draw(Batch batch, float parentAlpha) {
-                batch.draw(texture, getX(), getY(), texture.getRegionWidth(), texture.getRegionHeight());
+                batch.draw(deathTexture, getX(), getY(), texture.getRegionWidth(), texture.getRegionHeight());
             }
 
             @Override
