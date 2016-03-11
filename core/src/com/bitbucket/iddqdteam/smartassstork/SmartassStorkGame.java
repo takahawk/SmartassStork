@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.bitbucket.iddqdteam.smartassstork.game.PlayerData;
 import com.bitbucket.iddqdteam.smartassstork.screens.GameScreen;
+import com.bitbucket.iddqdteam.smartassstork.screens.MenuScreen;
 import com.bitbucket.iddqdteam.smartassstork.util.ResourceManager;
 
 public class SmartassStorkGame extends Game {
@@ -16,7 +17,8 @@ public class SmartassStorkGame extends Game {
 	
 	@Override
 	public void create () {
-		setScreen(new GameScreen(new PlayerData(), new TmxMapLoader().load("map1.tmx"), resourceManager));
+		setScreen(new MenuScreen(this, resourceManager));
+		// setScreen(new GameScreen(new TmxMapLoader().load("map1.tmx"), resourceManager));
 		batch = new SpriteBatch();
 	}
 
