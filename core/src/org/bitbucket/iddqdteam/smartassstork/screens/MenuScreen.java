@@ -1,4 +1,4 @@
-package com.bitbucket.iddqdteam.smartassstork.screens;
+package org.bitbucket.iddqdteam.smartassstork.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -12,9 +12,9 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
-import com.bitbucket.iddqdteam.smartassstork.SmartassStorkGame;
-import com.bitbucket.iddqdteam.smartassstork.game.PlayerData;
-import com.bitbucket.iddqdteam.smartassstork.util.ResourceManager;
+import org.bitbucket.iddqdteam.smartassstork.SmartassStorkGame;
+import org.bitbucket.iddqdteam.smartassstork.game.PlayerData;
+import org.bitbucket.iddqdteam.smartassstork.util.ResourceManager;
 
 /**
  * Created by takahawk on 10.03.16.

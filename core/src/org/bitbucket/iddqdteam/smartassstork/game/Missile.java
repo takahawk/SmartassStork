@@ -1,11 +1,11 @@
-package com.bitbucket.iddqdteam.smartassstork.game;
+package org.bitbucket.iddqdteam.smartassstork.game;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.bitbucket.iddqdteam.smartassstork.screens.GameScreen;
+import org.bitbucket.iddqdteam.smartassstork.screens.GameScreen;
 
 /**
  * Created by takahawk on 09.03.16.

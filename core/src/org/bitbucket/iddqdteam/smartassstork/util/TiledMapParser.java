@@ -1,4 +1,4 @@
-package com.bitbucket.iddqdteam.smartassstork.util;
+package org.bitbucket.iddqdteam.smartassstork.util;
 
 import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.physics.box2d.PolygonShape;

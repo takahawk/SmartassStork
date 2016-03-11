@@ -1,8 +1,8 @@
-package com.bitbucket.iddqdteam.smartassstork.desktop;
+package org.bitbucket.iddqdteam.smartassstork.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.bitbucket.iddqdteam.smartassstork.SmartassStorkGame;
+import org.bitbucket.iddqdteam.smartassstork.SmartassStorkGame;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {

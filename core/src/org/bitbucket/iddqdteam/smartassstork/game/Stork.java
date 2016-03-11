@@ -1,4 +1,4 @@
-package com.bitbucket.iddqdteam.smartassstork.game;
+package org.bitbucket.iddqdteam.smartassstork.game;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -6,9 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
-import com.bitbucket.iddqdteam.smartassstork.screens.GameScreen;
-
-import java.util.Map;
+import org.bitbucket.iddqdteam.smartassstork.screens.GameScreen;
 
 /**
  * Created by takahawk on 09.03.16.
@@ -69,8 +67,9 @@ public class Stork
         beginX = body.getPosition().x;
         endX = body.getPosition().x + routeDistance;
         body.setLinearVelocity(VELOCITY, 0);
-        System.out.println(beginX);
-        System.out.println(endX);
+        setWidth(texture.getRegionWidth() * 2);
+        setHeight(texture.getRegionHeight() * 2);
+        setBounds(getX(),getY(),getWidth(),getHeight());
     }
 
     public void setDeathTexture(TextureRegion deathTexture) {
@@ -118,6 +117,8 @@ public class Stork
     public float getY() {
         return body.getPosition().y * GameScreen.PIXELS_TO_METERS;
     }
+
+
 
     public Body getBody() {
         return body;

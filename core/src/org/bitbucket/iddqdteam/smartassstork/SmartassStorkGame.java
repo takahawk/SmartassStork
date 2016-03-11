@@ -1,14 +1,10 @@
-package com.bitbucket.iddqdteam.smartassstork;
+package org.bitbucket.iddqdteam.smartassstork;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.bitbucket.iddqdteam.smartassstork.game.PlayerData;
-import com.bitbucket.iddqdteam.smartassstork.screens.GameScreen;
-import com.bitbucket.iddqdteam.smartassstork.screens.MenuScreen;
-import com.bitbucket.iddqdteam.smartassstork.util.ResourceManager;
+import org.bitbucket.iddqdteam.smartassstork.screens.MenuScreen;
+import org.bitbucket.iddqdteam.smartassstork.util.ResourceManager;
 
 public class SmartassStorkGame extends Game {
 	private ResourceManager resourceManager = new ResourceManager();

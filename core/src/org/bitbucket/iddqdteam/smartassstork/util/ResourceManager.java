@@ -1,4 +1,4 @@
-package com.bitbucket.iddqdteam.smartassstork.util;
+package org.bitbucket.iddqdteam.smartassstork.util;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.maps.tiled.TiledMap;

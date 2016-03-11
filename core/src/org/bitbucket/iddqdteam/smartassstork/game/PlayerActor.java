@@ -1,20 +1,14 @@
-package com.bitbucket.iddqdteam.smartassstork.game;
+package org.bitbucket.iddqdteam.smartassstork.game;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
-import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
-import com.bitbucket.iddqdteam.smartassstork.screens.GameScreen;
+import org.bitbucket.iddqdteam.smartassstork.screens.GameScreen;
 
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,7 +19,7 @@ public class PlayerActor
         extends Actor
         implements Killable {
     private static final float MOVE_DELAY_TIME = 0.5f;
-    private static final float MOVE_FORCE = 4f;
+    private static final float MOVE_FORCE = 6f;
     private static final float JUMP_FORCE = 2f;
     TextureRegion texture;
     Animation moveAnimation;
