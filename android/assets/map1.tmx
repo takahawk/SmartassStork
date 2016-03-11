@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" width="50" height="10" tilewidth="64" tileheight="64">
- <tileset firstgid="1" name="ground_tileset1" tilewidth="64" tileheight="64">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="50" height="10" tilewidth="64" tileheight="64" nextobjectid="17">
+ <tileset firstgid="1" name="ground_tileset1" tilewidth="64" tileheight="64" tilecount="48" columns="8">
   <image source="ground_tileset1.png" width="512" height="384"/>
  </tileset>
- <tileset firstgid="49" name="sky_tileset1" tilewidth="64" tileheight="64">
+ <tileset firstgid="49" name="sky_tileset1" tilewidth="64" tileheight="64" tilecount="36" columns="6">
   <image source="sky_tileset1.png" width="384" height="384"/>
  </tileset>
  <layer name="Tile Layer 1" width="50" height="10">
   <data encoding="csv">
 22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,
-22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,
-22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,1,2,3,4,5,
-22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,9,10,11,12,13,
-22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,
+22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,1,2,5,6,22,22,22,22,
+22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,9,10,13,14,2,3,4,5,
+22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,1,2,5,6,22,22,22,22,9,10,11,12,13,
+22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,10,13,22,22,22,22,22,22,22,22,22,22,
 22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,1,2,3,4,5,6,22,22,22,22,22,22,22,22,22,22,22,22,1,2,5,6,22,22,22,22,
 22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,9,10,11,12,13,14,22,22,22,22,22,22,22,22,22,22,22,22,9,10,13,14,22,22,22,22,
 27,28,29,30,27,27,29,30,31,32,22,25,26,27,28,29,30,31,32,22,25,26,31,32,22,22,22,22,22,22,22,22,25,26,27,28,29,26,27,30,31,32,22,22,22,22,22,22,22,22,
@@ -20,50 +20,66 @@
 43,44,45,46,43,43,45,46,47,48,22,41,42,43,44,45,46,47,48,22,41,42,47,48,22,22,22,22,22,22,22,22,41,42,43,44,45,44,43,46,47,48,22,22,22,22,22,22,22,22
 </data>
  </layer>
- <objectgroup name="Player" width="50" height="10">
-  <object name="Hero" x="128" y="256">
+ <objectgroup name="Player">
+  <object id="1" name="Hero" x="128" y="256">
    <polygon points="0,0 64,0 64,64 0,64"/>
   </object>
  </objectgroup>
- <objectgroup name="Ground" width="50" height="10">
-  <object x="3" y="489">
+ <objectgroup name="Ground">
+  <object id="2" x="3" y="489">
    <polygon points="0,0 592,-1 564,149 -3,151"/>
   </object>
-  <object x="752" y="492">
+  <object id="3" x="752" y="492">
    <polygon points="0,0 407,-3 392,148 25,147"/>
   </object>
-  <object x="1345" y="485">
+  <object id="4" x="1345" y="485">
    <polygon points="0,0 135,1 128,155 3,155"/>
   </object>
-  <object x="1588" y="357">
+  <object id="5" x="1588" y="357">
    <polygon points="0,0 289,0 269,91 15,91"/>
   </object>
-  <object x="2093" y="488">
+  <object id="6" x="2093" y="488">
    <polygon points="0,0 549,-1 531,152 28,153"/>
   </object>
-  <object x="2737" y="359">
+  <object id="7" x="2737" y="359">
    <polygon points="0,0 167,1 143,89 19,91"/>
   </object>
-  <object x="2928" y="168">
+  <object id="8" x="2928" y="168">
    <polygon points="0,0 268,-1 269,88 23,89"/>
   </object>
+  <object id="12" x="2416" y="230">
+   <polygon points="0,0 169,1 140,91 19,92"/>
+  </object>
+  <object id="14" x="2737" y="99">
+   <polygon points="0,0 168,1 137,91 19,90"/>
+  </object>
  </objectgroup>
- <objectgroup name="Enemies" width="50" height="10">
-  <object name="Stork1" x="2112" y="448">
+ <objectgroup name="Enemies">
+  <object id="9" name="Stork1" x="2112" y="448">
    <properties>
+    <property name="respawn" type="bool" value="true"/>
     <property name="routeDistance" value="6"/>
    </properties>
    <polygon points="0,0 0,-64 64,-64 64,0"/>
   </object>
-  <object name="Stork1" x="1600" y="320">
+  <object id="10" name="Stork1" x="1600" y="320">
    <properties>
+    <property name="respawn" type="bool" value="false"/>
     <property name="routeDistance" value="3"/>
    </properties>
    <polygon points="0,0 0,-64 64,-64 64,0"/>
   </object>
-  <object name="Stork1" x="768" y="448">
+  <object id="11" name="Stork1" x="768" y="448">
    <properties>
+    <property name="respawn" type="bool" value="true"/>
     <property name="routeDistance" value="5"/>
+   </properties>
+   <polygon points="0,0 0,-64 64,-64 64,0"/>
+  </object>
+  <object id="15" name="Stork1" x="2673" y="88">
+   <properties>
+    <property name="respawn" type="bool" value="false"/>
+    <property name="routeDistance" value="2"/>
    </properties>
    <polygon points="0,0 0,-64 64,-64 64,0"/>
   </object>
