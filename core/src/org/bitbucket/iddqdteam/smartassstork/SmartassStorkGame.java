@@ -7,6 +7,7 @@ import org.bitbucket.iddqdteam.smartassstork.screens.MenuScreen;
 import org.bitbucket.iddqdteam.smartassstork.util.ResourceManager;
 
 public class SmartassStorkGame extends Game {
+	public static final int SCREEN_WIDTH = 960, SCREEN_HEIGHT = 540;
 	private ResourceManager resourceManager = new ResourceManager();
 	SpriteBatch batch;
 	Texture img;

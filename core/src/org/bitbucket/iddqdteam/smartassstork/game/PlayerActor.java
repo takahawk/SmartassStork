@@ -18,6 +18,7 @@ import java.util.Map;
 public class PlayerActor
         extends Actor
         implements Killable {
+    private static final float FIRE_DELAY = 0.5f;
     private static final float MOVE_DELAY_TIME = 0.5f;
     private static final float MOVE_FORCE = 6f;
     private static final float JUMP_FORCE = 2f;
@@ -29,6 +30,7 @@ public class PlayerActor
     private boolean rightOrientation = true;
     private boolean onTheGround = false;
     private float lastMove = 0;
+    private float lastFire = 0;
     private float elapsedTime = 0;
     private Map<Body, Killable> entities = new HashMap<Body, Killable>();
 
@@ -131,19 +133,22 @@ public class PlayerActor
     }
 
     public void fire() {
-        Missile missile = new Missile(
-                missileTexture,
-                new Vector2(
-                        _body.getPosition().x
-                                + (rightOrientation ? 1 : -1) *
-                                texture.getRegionWidth() / GameScreen.PIXELS_TO_METERS,
-                        _body.getPosition().y
-                ),
-                _body.getWorld(),
-                rightOrientation
-        );
-        getStage().addActor(missile);
-        entities.put(missile.getBody(), missile);
+        if (elapsedTime - lastFire > FIRE_DELAY) {
+            lastFire = elapsedTime;
+            Missile missile = new Missile(
+                    missileTexture,
+                    new Vector2(
+                            _body.getPosition().x
+                                    + (rightOrientation ? 1 : -1) *
+                                    texture.getRegionWidth() / GameScreen.PIXELS_TO_METERS,
+                            _body.getPosition().y
+                    ),
+                    _body.getWorld(),
+                    rightOrientation
+            );
+            getStage().addActor(missile);
+            entities.put(missile.getBody(), missile);
+        }
     }
 
     public void setOnTheGround(boolean onTheGround) {

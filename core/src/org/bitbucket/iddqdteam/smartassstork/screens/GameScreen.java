@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -17,17 +18,15 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
-import com.badlogic.gdx.scenes.scene2d.Action;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.*;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FillViewport;
+import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import org.bitbucket.iddqdteam.smartassstork.SmartassStorkGame;
 import org.bitbucket.iddqdteam.smartassstork.util.ResourceManager;
@@ -41,15 +40,20 @@ import java.util.*;
  */
 public class GameScreen
         implements Screen {
+    private static final int LEVEL_COUNT = 2;
     public static final float PIXELS_TO_METERS = 100;
     private static final float GRAVITY = -5f;
+
+    private int level;
+    private int storksToKill;
+    private SmartassStorkGame game;
     private boolean firstHero;
     private boolean hardMode;
     private PlayerData playerData;
     private ResourceManager resourceManager;
     private OrthographicCamera camera = initCamera();
     private OrthographicCamera camera2 = new OrthographicCamera();
-    private Viewport port = new FillViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
+    private Viewport port = new ScalingViewport(Scaling.fit, game.SCREEN_WIDTH, game.SCREEN_HEIGHT, camera);
     private World world = new World(new Vector2(0, GRAVITY), true);
     private TiledMapParser mapParser = new TiledMapParser();
     private Texture heroTexture;
@@ -58,10 +62,16 @@ public class GameScreen
     private Texture moonTexture;
     private Texture storkTexture;
     private Texture deathStorkTexture;
+    private Texture ded;
+    private Texture gameOverTexture;
+    private Texture gameCompletedTexture;
     private Animation heroMoveAnimation;
     private PlayerActor playerActor;
     private MapStage mapStage;
     private Stage hud;
+    private Stage controls;
+    private ImageButton rightButton, leftButton, jumpButton, fireButton;
+    private Texture rightTexture, leftTexture, jumpTexture, fireTexture;
     private Skin hudSkin;
     private SpriteBatch batch;
     private Label scoreLabel, livesLabel;
@@ -72,6 +82,7 @@ public class GameScreen
     private Queue<Body> bodiesToBeRemoved = new ArrayDeque<Body>();
 
     private boolean gameIsOver = false;
+    private boolean gameCompleted = false;
 
     private Box2DDebugRenderer debugRenderer = new Box2DDebugRenderer();
 
@@ -99,11 +110,18 @@ public class GameScreen
         }
         moonTexture = resourceManager.get("sky_tileset1.png", Texture.class);
         storkTexture = resourceManager.get("stork-flying.png", Texture.class);
-        heroMissileTexture = resourceManager.get("molotok.png", Texture.class);
+        heroMissileTexture = resourceManager.get(firstHero ? "molotok.png" : "ultr.png", Texture.class);
         deathStorkTexture = resourceManager.get("stork.png", Texture.class);
         hero1deathTexture = resourceManager.get("hero1dead.png", Texture.class);
         hero2deathTexture = resourceManager.get("hero2dead.png", Texture.class);
         hudSkin = resourceManager.get("uiskin.json", Skin.class);
+        rightTexture = resourceManager.get("right.png", Texture.class);
+        leftTexture = resourceManager.get("left.png", Texture.class);
+        jumpTexture = resourceManager.get("up.png", Texture.class);
+        fireTexture = resourceManager.get("attack.png", Texture.class);
+        ded = resourceManager.get("ded.png", Texture.class);
+        gameOverTexture = resourceManager.get("gameover.png", Texture.class);
+        gameCompletedTexture = resourceManager.get("congrats.png", Texture.class);
     }
 
     private void initHud() {
@@ -143,14 +161,40 @@ public class GameScreen
 
     }
 
+    private void initControls() {
+        rightButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(rightTexture)));
+        leftButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(leftTexture)));
+        jumpButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(jumpTexture)));
+        fireButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(fireTexture)));
+        controls = new Stage();
+        Table table = new Table();
+        table.setFillParent(true);
+        table.top();
+        table.add(jumpButton).padTop(50f);
+        table.add().padTop(50f);
+        table.add(fireButton).padTop(50f);
+        table.row();
+        table.add().expandY();
+        table.row();
+        table.add(leftButton).align(Align.bottom).padBottom(50f);
+        table.add().expandX();
+        table.add(rightButton).align(Align.bottom).padBottom(50f);
+        table.row();
+        controls.addActor(table);
+    }
+
     public GameScreen(
             final PlayerData playerData,
             final boolean firstHero,
             final boolean hardMode,
-            final TiledMap map,
             final ResourceManager resourceManager,
-            final SmartassStorkGame game
+            final SmartassStorkGame game,
+            final int level
         ) {
+        this.game = game;
+        this.level = level;
+        storksToKill = level * 10;
+        final TiledMap map = new TmxMapLoader().load("map" + level + ".tmx");
         this.playerData = playerData;
         this.resourceManager = resourceManager;
         this.firstHero = firstHero;
@@ -160,6 +204,7 @@ public class GameScreen
         initResources();
         initHud();
         initMapStage(map);
+        initControls();
         Vector2 position = new Vector2(
                 (Float) map.getLayers().get("Player").getObjects().get(0).getProperties().get("x") / PIXELS_TO_METERS,
                 (Float) map.getLayers().get("Player").getObjects().get(0).getProperties().get("y") / PIXELS_TO_METERS
@@ -208,21 +253,37 @@ public class GameScreen
                                     playerData,
                                     firstHero,
                                     hardMode,
-                                    map,
                                     resourceManager,
-                                    game
+                                    game,
+                                    level
                             ));
+                        } else {
+                            gameIsOver = true;
                         }
                         playerActor.kill();
                         bodiesToBeRemoved.offer(getBody(contact, "hero"));
-                        gameIsOver = true;
+                    } else if (with(contact, "exit")) {
+                        if (level < LEVEL_COUNT) {
+                            if (storksToKill <= playerData.getScore()) {
+                                game.setScreen(new GameScreen(
+                                        playerData,
+                                        firstHero,
+                                        hardMode,
+                                        resourceManager,
+                                        game,
+                                        level + 1
+                                ));
+                            }
+                        } else {
+                            gameCompleted = true;
+                        }
                     }
                 if (with(contact, "missile")) {
                     if (with(contact, "stork")) {
                         Body first = contact.getFixtureA().getBody();
                         Body second = contact.getFixtureB().getBody();
                         playerData.setScore(playerData.getScore() + 1);
-                        scoreLabel.setText("STORKS KILLED: " + playerData.getScore());
+                        scoreLabel.setText("STORKS KILLED: " + playerData.getScore() + " of " + storksToKill);
                         final Stork deadStork = (Stork) entities.get(getBody(contact, "stork"));
                         if (deadStork.isRespawn()) {
                             mapStage.addAction(new Action() {
@@ -272,10 +333,12 @@ public class GameScreen
         addGround(map);
         addStorks(map);
         addBoundaries();
-        Gdx.input.setInputProcessor(mapStage);
+        addExit(map);
+        addNPC(map);
+        Gdx.input.setInputProcessor(controls);
     }
 
-    public void addGround(TiledMap map) {
+    private void addGround(TiledMap map) {
         for (MapObject obj : map.getLayers().get("Ground").getObjects()) {
 
             if (obj instanceof PolygonMapObject) {
@@ -292,7 +355,7 @@ public class GameScreen
         }
     }
 
-    public void addStorks(TiledMap map) {
+    private void addStorks(TiledMap map) {
         for (MapObject obj : map.getLayers().get("Enemies").getObjects()) {
             Vector2 position = new Vector2(
                     (Float) obj.getProperties().get("x") / PIXELS_TO_METERS,
@@ -320,7 +383,7 @@ public class GameScreen
         }
     }
 
-    public void addBoundaries() {
+    private void addBoundaries() {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.StaticBody;
         bodyDef.position.set(0, 0);
@@ -359,6 +422,46 @@ public class GameScreen
 
     }
 
+    private void addExit(TiledMap map) {
+        for (MapObject obj : map.getLayers().get("Exit").getObjects()) {
+            if (obj instanceof PolygonMapObject) {
+                Shape shape = mapParser.getPolygon((PolygonMapObject) obj, 1 / PIXELS_TO_METERS);
+                BodyDef bodyDef = new BodyDef();
+                bodyDef.type = BodyDef.BodyType.StaticBody;
+                Body body = world.createBody(bodyDef);
+                FixtureDef fixtureDef = new FixtureDef();
+                fixtureDef.shape = shape;
+                body.createFixture(fixtureDef);
+                body.setUserData("exit");
+            }
+        }
+    }
+
+    private void addNPC(TiledMap map) {
+        MapLayer layer = map.getLayers().get("NPC");
+        BitmapFont font = new BitmapFont();
+        if (layer != null) {
+            for (MapObject obj : layer.getObjects()) {
+                final float x = (Float) obj.getProperties().get("x");
+                final float y = (Float) obj.getProperties().get("y");
+                final String text = (String) obj.getProperties().get("text");
+                Actor actor = new Actor() {
+                    @Override
+                    public void draw(Batch batch, float parentAlpha) {
+                        batch.draw(ded, x, y, ded.getWidth(), ded.getHeight());
+                    }
+                };
+                Label textLabel = new Label(text, hudSkin);
+                textLabel.setWrap(true);
+                textLabel.setWidth(300);
+                textLabel.setPosition(x, y + 100f);
+                mapStage.addActor(actor);
+                mapStage.addActor(textLabel);
+                actor.toBack();
+            }
+        }
+    }
+
     public OrthographicCamera initCamera() {
         camera = new OrthographicCamera();
         camera.setToOrtho(
@@ -371,6 +474,12 @@ public class GameScreen
     }
 
     public void handleInput() {
+        if ((gameIsOver || gameCompleted) && Gdx.input.isTouched()) {
+            game.setScreen(new MenuScreen(
+                    game,
+                    resourceManager
+            ));
+        }
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             playerActor.moveRight();
         } else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
@@ -379,6 +488,19 @@ public class GameScreen
             playerActor.jump();
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
             playerActor.fire();
+        }
+
+        if (rightButton.isPressed()) {
+            playerActor.moveRight();
+        }
+        if (leftButton.isPressed()) {
+            playerActor.moveLeft();
+        }
+        if (fireButton.isPressed()) {
+            playerActor.fire();
+        }
+        if (jumpButton.isPressed()) {
+            playerActor.jump();
         }
     }
 
@@ -401,15 +523,16 @@ public class GameScreen
         while (!bodiesToBeRemoved.isEmpty()) {
             world.destroyBody(bodiesToBeRemoved.poll());
         }
-        if (!gameIsOver) {
-            handleInput();
-        }
+
         world.step(delta, 6, 2);
     }
 
     @Override
     public void render(float delta) {
-        update(delta);
+        if (!gameIsOver && !gameCompleted) {
+            update(delta);
+        }
+        handleInput();
         Gdx.gl.glClearColor(1, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -418,13 +541,28 @@ public class GameScreen
         hud.act(delta);
         hud.draw();
 
+        controls.act(delta);
+        controls.draw();
+
         Matrix4 debugMatrix = camera.combined.cpy().scale(PIXELS_TO_METERS, PIXELS_TO_METERS, 0);
-        debugRenderer.render(world, debugMatrix);
+        // debugRenderer.render(world, debugMatrix);
+        if (gameIsOver) {
+            batch.begin();
+            batch.draw(gameOverTexture, 0, 0, gameOverTexture.getWidth(), gameOverTexture.getHeight());
+            batch.end();
+        }
+        if (gameCompleted) {
+            batch.begin();
+            batch.draw(gameCompletedTexture, 0, 0, gameCompletedTexture.getWidth(), gameCompletedTexture.getHeight());
+            batch.end();
+        }
     }
 
     @Override
     public void resize(int width, int height) {
-
+//        camera.setToOrtho(false, width, height);
+//        camera.update();
+        port.update(width, height, true);
     }
 
     @Override
