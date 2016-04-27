@@ -5,6 +5,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -70,7 +71,16 @@ public class MenuScreen implements Screen {
         table.add().expandX();
         table.row();
 
-        hero1Image = new Image(hero1Texture);
+        hero1Image = new Image(hero1Texture) {
+
+            @Override
+            public void draw(Batch batch, float parentAlpha) {
+                super.draw(batch, parentAlpha);
+                if (hero1Picked) {
+                    batch.draw(lightHero, getX(), getY(), getWidth(), getHeight());
+                }
+            }
+        };
         hero1Image.addListener(new ClickListener() {
 
             @Override
@@ -78,7 +88,16 @@ public class MenuScreen implements Screen {
                 hero1Picked = true;
             }
         });
-        hero2Image = new Image(hero2Texture);
+        hero2Image = new Image(hero2Texture) {
+
+            @Override
+            public void draw(Batch batch, float parentAlpha) {
+                super.draw(batch, parentAlpha);
+                if (!hero1Picked) {
+                    batch.draw(lightHero, getX(), getY(), getWidth(), getHeight());
+                }
+            }
+        };
         hero2Image.addListener(new ClickListener() {
 
             @Override
@@ -92,8 +111,25 @@ public class MenuScreen implements Screen {
         table.add(); table.row();
 
 
-        easyModeLabel = new Image(easyModeTexture);
-        hardModeLabel = new Image(hardModeTexture);
+        easyModeLabel = new Image(easyModeTexture) {
+
+            @Override
+            public void draw(Batch batch, float parentAlpha) {
+                super.draw(batch, parentAlpha);
+                if (!hardMode) {
+                    batch.draw(lightMenu, getX(), getY(), getWidth(), getHeight());
+                }
+            }
+        };
+        hardModeLabel = new Image(hardModeTexture) {
+            @Override
+            public void draw(Batch batch, float parentAlpha) {
+                super.draw(batch, parentAlpha);
+                if (hardMode) {
+                    batch.draw(lightMenu, getX(), getY(), getWidth(), getHeight());
+                }
+            }
+        };
         easyModeLabel.addListener(new ClickListener() {
 
             @Override
@@ -149,28 +185,6 @@ public class MenuScreen implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
-        if (hero1Picked) {
-            batch.draw(lightHero, hero1Image.getX(), hero1Image.getY(), hero1Image.getWidth(), hero1Image.getHeight());
-        } else {
-            batch.draw(lightHero, hero2Image.getX(), hero2Image.getY(), hero2Image.getWidth(), hero2Image.getHeight());
-        }
-        if (hardMode) {
-            batch.draw(
-                    lightMenu,
-                    hardModeLabel.getX(),
-                    hardModeLabel.getY(),
-                    hardModeLabel.getWidth(),
-                    hardModeLabel.getHeight()
-            );
-        } else {
-            batch.draw(
-                    lightMenu,
-                    easyModeLabel.getX(),
-                    easyModeLabel.getY(),
-                    easyModeLabel.getWidth(),
-                    easyModeLabel.getHeight()
-            );
-        }
         batch.end();
         stage.act(delta);
         stage.draw();
